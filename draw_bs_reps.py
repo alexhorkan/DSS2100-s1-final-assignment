@@ -5,9 +5,10 @@
 import pandas as pd
 import numpy as np
 
+print("This is a program that calculates a 95% confidence interval on a dataset of zebrafish's bout length time.")
+
 # definine draw bootstrap replicas function 
 def draw_bs_reps(data, func, size=1):
-    """Draw bootstrap replicas"""
     
     # initialise replicates array
     bs_reps = np.empty(size)
@@ -30,6 +31,7 @@ def draw_bs_reps(data, func, size=1):
 if __name__=='__main__':
     # ignore first 4 rows of metadata in the csv file
     fish_data = pd.read_csv('gandhi_et_al_bouts.csv',skiprows=4)
+    print("fish_data has been read into the program, skipped the first 4 lines for data convinience")
     
     # select wild type zebrafish from the dataset
     bout_lengths_wt = fish_data[fish_data.genotype == 'wt'].bout_length
@@ -40,10 +42,12 @@ if __name__=='__main__':
     # Compute mean active bout length
     mean_wt = np.mean(bout_lengths_wt)
     mean_mut = np.mean(bout_lengths_mut)
+    print("fish_data means have been compiled")
     
     # Draw bootstrap replicates
     bs_reps_wt = draw_bs_reps(bout_lengths_wt, np.mean, size=10000)
     bs_reps_mut = draw_bs_reps(bout_lengths_mut, np.mean, size=10000)
+    print("fish_data has been bootstrapped 10000 times")
     
     # Compute 95% confidence intervals
     conf_int_wt = np.percentile(bs_reps_wt, [2.5, 97.5])
@@ -54,3 +58,6 @@ if __name__=='__main__':
     Wild type zebrafish: mean length = {0:.3f} min., confidence interval = [{1:.1f}, {2:.1f}] min.
     Mutant zebrafish: mean = {3:.3f} min., confidence interval = [{4:.1f}, {5:.1f}] min.
     """.format(mean_wt, *conf_int_wt, mean_mut, *conf_int_mut))
+    print("A 95% confidence interval has been placed")
+    
+    print("Program is complete")
